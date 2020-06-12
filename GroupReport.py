@@ -1,7 +1,7 @@
 import argparse
 import grp
 import pwd
-import matplotlib
+#import matplotlib
 import subprocess
 
 # DEFINE FUNCTIONS
@@ -117,10 +117,20 @@ def get_usage(username,partition,start,end):
 
 # MAIN PROGRAM
 # get input options
-parser=argparse.ArgumentParser(description='Generate Oscar usage report.')
+parser=argparse.ArgumentParser(description=
+    'Generate Oscar resource usage report for a particular group.')
 parser.add_argument('groupname',
                     help='Name of group to create report for.',
                     type=str)
+parser.add_argument('-S',
+                    dest='start',
+                    help='Beginning of report period, formatted as YYYY-MM-DD.',
+                    type=str)
+parser.add_argument('-E',
+                    dest='end',
+                    help='End of report period, formatted as YYYY-MM-DD.',
+                    type=str)
+
 args=parser.parse_args()                    
 
 account={}
@@ -137,9 +147,10 @@ for user in affiliation:
     emailaddr[user]=get_user_email(user)
         
 
+# output to screen (for debugging only)
+print(args)
 print(account)
 print(name)
 print(emailaddr)
-
-# output to screen (for debugging only)
 print(affiliation)
+
