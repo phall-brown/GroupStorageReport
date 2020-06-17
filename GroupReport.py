@@ -30,10 +30,13 @@ def get_user_name(username):
     Returns user's name
     """
     tmp=[]
- 
-    tmp=pwd.getpwnam(username)
-    try:
-      output=tmp.pw_gecos.split(',')[0]
+
+    try: 
+      tmp=pwd.getpwnam(username)
+      try:
+        output=tmp.pw_gecos.split(',')[0]
+      except:
+        output='NA'
     except:
       output='NA'
 
@@ -45,9 +48,12 @@ def get_user_email(username):
     """
     tmp=[]
  
-    tmp=pwd.getpwnam(username)
     try:
-      output=tmp.pw_gecos.split(',')[4]
+      tmp=pwd.getpwnam(username)
+      try:
+        output=tmp.pw_gecos.split(',')[4]
+      except:
+        output='NA'
     except:
       output='NA'
 
