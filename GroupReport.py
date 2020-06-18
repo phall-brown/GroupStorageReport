@@ -100,7 +100,7 @@ def get_account_types(username):
     for group in gpuhe:
       if group in groups:
         output.append('gpu-he')
- 
+
     return output
 
 def get_storage(username):
@@ -114,12 +114,25 @@ def get_usage(username,partition,start,end):
     Returns total usage (i.e., jobs run) on the specified partition
     for the given user over the period in question.
     """
+    output=[]
+    # Get summary of jobs (# of jobs, total time) on given partition
+    proc=subprocess.Popen(['/usr/local/bin/sacct',
+                          '-u',username,
+                          '-S',start,
+                          '-E',end,
+                          '-r',partition,
+                          '-X','-n','--format=CPUTimeRaw'],
+                           stdout=subprocess.PIPE,
+                           stderr=subprocess.STDOUT,
+                           encoding='utf-8')
+    out,err=proc.communicate()
+    times=list(out.splitlines())
+    times=[int(i) for i in times]
 
-
-
-
-
-
+    # output[0]: total number of jobs
+    # output[1]: total CPUTime of jobs (in units of cpu•s) 
+    output=[len(times),sum(times)]
+    return output
 
 # MAIN PROGRAM
 # get input options
@@ -141,22 +154,32 @@ args=parser.parse_args()
 
 account={}
 affiliation=[]
+batch={}
+bigmem={}
 emailaddr={}
+gpu={}
 name={}
 
 # get list of group members
 affiliation=get_members(args.groupname)
 # get usage and storage info for each individual user
 for user in affiliation:
-    account[user]=get_account_types(user) 
     name[user]=get_user_name(user)
     emailaddr[user]=get_user_email(user)
-        
-
+    account[user]=get_account_types(user) 
+    batch[user]=get_usage(user,'batch',args.start,args.end)
+    bigmem[user]=get_usage(user,'bigmem',args.start,args.end)
+    gpu[user]=get_usage(user,'gpu',args.start,args.end)
+    
 # output to screen (for debugging only)
-print(args)
+print(args.groupname)
+print(args.start)
+print(args.end)
 print(account)
 print(name)
 print(emailaddr)
 print(affiliation)
+print(batch)
+print(bigmem)
+print(gpu)
 
