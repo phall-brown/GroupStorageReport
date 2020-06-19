@@ -103,12 +103,6 @@ def get_account_types(username):
 
     return output
 
-def get_storage(username):
-    """
-    Returns storage within the specified group's directory associated
-    with the specified user.
-    """
-
 def get_usage(username,partition,start,end):
     """
     Returns total usage (i.e., jobs run) on the specified partition
@@ -133,6 +127,12 @@ def get_usage(username,partition,start,end):
     # output[1]: total CPUTime of jobs (in units of cpu•s) 
     output=[len(times),sum(times)]
     return output
+
+def get_storage(username):
+    """
+    Returns storage within the specified group's directory associated
+    with the specified user.
+    """
 
 # MAIN PROGRAM
 # get input options
@@ -159,6 +159,7 @@ bigmem={}
 emailaddr={}
 gpu={}
 name={}
+storage={}
 
 # get list of group members
 affiliation=get_members(args.groupname)
@@ -170,6 +171,7 @@ for user in affiliation:
     batch[user]=get_usage(user,'batch',args.start,args.end)
     bigmem[user]=get_usage(user,'bigmem',args.start,args.end)
     gpu[user]=get_usage(user,'gpu',args.start,args.end)
+    
     
 # output to screen (for debugging only)
 print(args.groupname)
