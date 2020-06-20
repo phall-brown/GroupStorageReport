@@ -128,11 +128,16 @@ def get_usage(username,partition,start,end):
     output=[len(times),sum(times)]
     return output
 
-def get_storage(username):
+def get_storage(storagepath):
     """
     Returns storage within the specified group's directory associated
-    with the specified user.
+    with each.
     """
+    output={}
+ 
+    file=open(storagepath)
+
+    file.close()
 
 # MAIN PROGRAM
 # get input options
@@ -161,8 +166,13 @@ gpu={}
 name={}
 storage={}
 
+# constants
+storagepath='/gpfs/data/ccvstaff/quota-reports/'+args.groupname+'-quota-report.txt'
+
 # get list of group members
 affiliation=get_members(args.groupname)
+#storage=get_storage(args.groupname)
+
 # get usage and storage info for each individual user
 for user in affiliation:
     name[user]=get_user_name(user)
