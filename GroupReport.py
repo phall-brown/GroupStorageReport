@@ -25,6 +25,17 @@ def get_members(groupname):
             output[user.pw_name]=1
     return output
 
+def get_storage(storagepath):
+    """ 
+    Returns storage within the specified group's directory associated
+    with each.
+    """
+    output={}
+ 
+    file=open(storagepath)
+
+    file.close()
+
 def get_user_name(username):
     """
     Returns user's name
@@ -128,17 +139,6 @@ def get_usage(username,partition,start,end):
     output=[len(times),sum(times)]
     return output
 
-def get_storage(storagepath):
-    """
-    Returns storage within the specified group's directory associated
-    with each.
-    """
-    output={}
- 
-    file=open(storagepath)
-
-    file.close()
-
 # MAIN PROGRAM
 # get input options
 parser=argparse.ArgumentParser(description=
@@ -171,9 +171,10 @@ storagepath='/gpfs/data/ccvstaff/quota-reports/'+args.groupname+'-quota-report.t
 
 # get list of group members
 affiliation=get_members(args.groupname)
-#storage=get_storage(args.groupname)
+# get storage for group members
+storage=get_storage(storagepath)
 
-# get usage and storage info for each individual user
+# get general info and usage metrics for each individual user
 for user in affiliation:
     name[user]=get_user_name(user)
     emailaddr[user]=get_user_email(user)
@@ -181,7 +182,6 @@ for user in affiliation:
     batch[user]=get_usage(user,'batch',args.start,args.end)
     bigmem[user]=get_usage(user,'bigmem',args.start,args.end)
     gpu[user]=get_usage(user,'gpu',args.start,args.end)
-    
     
 # output to screen (for debugging only)
 print(args.groupname)
