@@ -1,8 +1,9 @@
 import argparse
 import grp
 import pwd
-#import matplotlib
 import subprocess
+import pandas as pd
+#import matplotlib
 
 # DEFINE FUNCTIONS
 def get_members(groupname):
@@ -30,11 +31,15 @@ def get_storage(storagepath):
     Returns storage within the specified group's directory associated
     with each.
     """
-    output={}
- 
-    file=open(storagepath)
-
-    file.close()
+    titles=['username','parent','type',
+            'GB_used','GB_avail','GB_hard','GB_grace','junk',
+            'used_FL','soft_FL','hard_FL','grace_FL']
+    nheader=4 # number of header lines in quota-report.txt files 
+    return pd.read_csv(storagepath,
+                      sep='\s+',
+                      engine='python',
+                      skiprows=nheader,
+                      names=titles)
 
 def get_user_name(username):
     """
@@ -168,6 +173,7 @@ storage={}
 
 # constants
 storagepath='/gpfs/data/ccvstaff/quota-reports/'+args.groupname+'-quota-report.txt'
+#storagepath='/Users/phall/work/baldrick/data/'+args.groupname+'-quota-report.txt'
 
 # get list of group members
 affiliation=get_members(args.groupname)
@@ -184,14 +190,14 @@ for user in affiliation:
     gpu[user]=get_usage(user,'gpu',args.start,args.end)
     
 # output to screen (for debugging only)
-print(args.groupname)
-print(args.start)
-print(args.end)
-print(account)
-print(name)
-print(emailaddr)
-print(affiliation)
-print(batch)
-print(bigmem)
-print(gpu)
-
+#print(args.groupname)
+#print(args.start)
+#print(args.end)
+#print(account)
+#print(name)
+#print(emailaddr)
+#print(affiliation)
+#print(batch)
+#print(bigmem)
+#print(gpu)
+#print(storage)
