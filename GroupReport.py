@@ -18,12 +18,12 @@ def get_members(groupname):
     # Secondary group members
     group=grp.getgrnam(groupname)
     for mem in group.gr_mem:
-        output[mem]=2
+        output[mem]='secondary'
     # Primary group members
     users=pwd.getpwall()
     for user in users:
         if user.pw_gid == group.gr_gid:
-            output[user.pw_name]=1
+            output[user.pw_name]='primary'
     return output
 
 def get_storage(storagepath):
@@ -35,11 +35,17 @@ def get_storage(storagepath):
             'GB_used','GB_avail','GB_hard','GB_grace','junk',
             'used_FL','soft_FL','hard_FL','grace_FL']
     nheader=4 # number of header lines in quota-report.txt files 
-    return pd.read_csv(storagepath,
+    data=pd.read_csv(storagepath,
                       sep='\s+',
                       engine='python',
                       skiprows=nheader,
-                      names=titles)
+                      names=titles,
+                      index_col='username',
+                      usecols=['username','GB_used','GB_avail'])
+    total_used=data.iloc[0,0]
+    total_avail=data.iloc[0,1]
+    data=data.drop(data.index[0]).drop(columns='GB_avail')
+    return total_used,total_avail,data
 
 def get_user_name(username):
     """
@@ -162,6 +168,7 @@ parser.add_argument('-E',
 
 args=parser.parse_args()                    
 
+# declarations
 account={}
 affiliation=[]
 batch={}
@@ -173,12 +180,11 @@ storage={}
 
 # constants
 storagepath='/gpfs/data/ccvstaff/quota-reports/'+args.groupname+'-quota-report.txt'
-#storagepath='/Users/phall/work/baldrick/data/'+args.groupname+'-quota-report.txt'
 
 # get list of group members
 affiliation=get_members(args.groupname)
 # get storage for group members
-storage=get_storage(storagepath)
+total_used,total_avail,storage=get_storage(storagepath)
 
 # get general info and usage metrics for each individual user
 for user in affiliation:
