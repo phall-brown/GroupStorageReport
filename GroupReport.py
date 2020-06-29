@@ -176,7 +176,7 @@ bigmem={}
 emailaddr={}
 gpu={}
 name={}
-storage={}
+#storage={}
 
 # constants
 storagepath='/gpfs/data/ccvstaff/quota-reports/'+args.groupname+'-quota-report.txt'
@@ -194,6 +194,35 @@ for user in affiliation:
     batch[user]=get_usage(user,'batch',args.start,args.end)
     bigmem[user]=get_usage(user,'bigmem',args.start,args.end)
     gpu[user]=get_usage(user,'gpu',args.start,args.end)
+
+# convert dicts to pandas dataframes
+affiliation_df=pd.DataFrame.from_dict(affiliation,orient='index',columns=['Affiliation'])
+account_df=pd.DataFrame.from_dict(account,orient='index',columns=['Account'])
+name_df=pd.DataFrame.from_dict(name,orient='index',columns=['Name'])
+email_df=pd.DataFrame.from_dict(emailaddr,orient='index',columns=['Email'])
+batch_df=pd.DataFrame.from_dict(batch,orient='index',columns=['BatchJobs','BatchUsage'])
+bigmem_df=pd.DataFrame.from_dict(bigmem,orient='index',columns=['BigmemJobs','BigmemUsage'])
+gpu_df=pd.DataFrame.from_dict(gpu,orient='index',columns=['GPUJobs','GPUUsage'])
+
+# combine dataframes into a single dataframe
+data=pd.concat([name_df,email_df,affiliation_df,account_df,
+               batch_df,bigmem_df,gpu_df,storage],
+               axis=1,ignore_index=False) 
+    
+# clean up NaNs and formatting of dataframe
+data['Name']=data['Name'].fillna('NA')
+data['Email']=data['Email'].fillna('NA')
+data['Affiliation']=data['Affiliation'].fillna('NA')
+data['Account']=data['Account'].fillna('-')
+data=data.fillna(0)
+
+data['BatchJobs']=data['BatchJobs'].astype(int)
+data['BatchUsage']=data['BatchUsage'].astype(int)
+data['BigmemJobs']=data['BigmemJobs'].astype(int)
+data['BigmemUsage']=data['BigmemUsage'].astype(int)
+data['GPUJobs']=data['GPUJobs'].astype(int)
+data['GPUUsage']=data['GPUUsage'].astype(int)
+data['GB_used']=data['GB_used'].astype(int)
     
 # output to screen (for debugging only)
 #print(args.groupname)
@@ -207,3 +236,4 @@ for user in affiliation:
 #print(bigmem)
 #print(gpu)
 #print(storage)
+print(data)
