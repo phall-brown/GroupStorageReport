@@ -3,7 +3,9 @@ import grp
 import pwd
 import subprocess
 import pandas as pd
-#import matplotlib
+import matplotlib
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_pdf import PdfPages
 
 # DEFINE FUNCTIONS
 def get_members(groupname):
@@ -149,6 +151,115 @@ def get_usage(username,partition,start,end):
     # output[1]: total CPUTime of jobs (in units of cpu•s) 
     output=[len(times),sum(times)]
     return output
+
+def make_pdf(data):
+#def make_pdf(filePath):
+    """
+    Create plots and tables and use them to generate formatted report.
+    """
+#    try:
+#        os.mkdir("output")
+#    except OSError:
+#        pass
+
+    with PdfPages('output/' + filePath[:-4] + '_Analysis.pdf') as pdf:
+        df = readFile(filePath)
+        userstorage = df["Storage (GB)"]
+        userlist = df["Username"]
+        legend = buildlegendtable(df)
+        userbatchjobs = df["# Jobs (batch)"]
+        userbatchmins = pd.to_numeric(df["Core*minutes (batch)"], errors='coerce')/60.0
+        userbigmemjobs = df["# Jobs (bigmem)"]
+        userbigmemmins = pd.to_numeric(df["Core*minutes (bigmem)"], errors='coerce')/60.0
+        groupmembers = buildgroupmemberstable(df)
+        grouptotals = buildgrouptotalstable(df)
+
+        #Create Page 1
+        fig = plt.figure(figsize=(8.27, 11.69))  # portrait orientation
+
+        grid_size = (100, 100)
+        def make_autopct(values):
+            def my_autopct(pct):
+                if pct==0.0:
+                    return ' '
+                elif pct < 0.1:
+                    return '<0.1'
+                else:
+                    return '{p:.1f}'.format(p=pct)
+            return my_autopct
+
+        # Storage Share Pie Chart
+        plt.subplot2grid(grid_size, (10, 50), rowspan=25, colspan=50)
+        plt.pie(userstorage, autopct=make_autopct(userstorage), pctdistance=1.25)
+        plt.title('Storage (%)')
+
+        # Stores list of colors for later tables, will need testing on groups with very large quantities of members
+        colorlist = plt.rcParams['axes.prop_cycle'].by_key()['color']
+
+        # Group Member Legend w/ Color Key
+        plt.subplot2grid(grid_size, (10, 0), rowspan=25, colspan=50)
+        plt.axis('off')
+        plt.table(cellText=legend.values, cellLoc="center", cellColours=list(zip(colorlist)),
+                  colLabels=list(legend.columns), loc="center")
+        plt.title('Group Members')
+
+        # Batch Job Share Pie Chart
+        plt.subplot2grid(grid_size, (40, 0), rowspan=25, colspan=50)
+        plt.pie(userbatchjobs, autopct=make_autopct(userbatchjobs), pctdistance=1.25)
+        plt.title('Batch: Share of Jobs (%)')
+
+        # Batch Job Utilization Pie Chart
+        plt.subplot2grid(grid_size, (40, 50), rowspan=25, colspan=50)
+        plt.pie(userbatchmins, autopct=make_autopct(userbatchmins), pctdistance=1.25)
+        plt.title('Batch: Utilization (%)')
+
+        # Bigmem Job Share Pie Chart
+        plt.subplot2grid(grid_size, (70, 0), rowspan=25, colspan=50)
+        plt.pie(userbigmemjobs, autopct=make_autopct(userbigmemjobs), pctdistance=1.25)
+        plt.title('Bigmem: Share of Jobs (%)')
+
+        # Bigmem Job Utilization Pie Chart
+        plt.subplot2grid(grid_size, (70, 50), rowspan=25, colspan=50)
+        plt.pie(userbatchmins, autopct=make_autopct(userbigmemmins), pctdistance=1.25)
+        plt.title('Bigmem: Utilization (%)')
+
+        # Page header
+        plt.tight_layout()
+                title = 'Monthly Usage Report'
+        plt.text(0.5, 0.90, title, horizontalalignment='center', verticalalignment='bottom', transform=fig.transFigure,
+                 size=24)
+
+        pdf.savefig()
+        plt.close()
+
+
+        # Table
+        fig = plt.figure(figsize=(11.69, 8.27))  # landscape orientation
+
+        grid_size = (100, 100)
+
+        # Group Members Data Table
+        plt.subplot2grid(grid_size, (10, 1), rowspan=45, colspan=99)
+        plt.axis('off')
+        plt.table(cellText=groupmembers.values, cellLoc="center", rowLabels=list(["          "] * len(df.index)),
+                  rowColours=colorlist, colLabels=list(groupmembers.columns), loc="center")
+        plt.title('Group Members')
+
+        batch = 'Partition: Batch'
+        plt.text(0.635, 0.74, batch, verticalalignment='bottom', transform=fig.transFigure, size=8)
+
+        bigmem = 'Partition: Bigmem'
+        plt.text(0.8125, 0.74, bigmem, verticalalignment='bottom', transform=fig.transFigure, size=8)
+
+        # Group Totals Data Table
+        plt.subplot2grid(grid_size, (70, 0), rowspan=30, colspan=100)
+        plt.axis('off')
+        plt.table(cellText=grouptotals.values, cellLoc="center", colLabels=list(grouptotals.columns), loc="center")
+        plt.title('Group Totals')
+
+        pdf.savefig()
+        plt.close()
+
 
 # MAIN PROGRAM
 # get input options
