@@ -225,7 +225,7 @@ def make_pdf(data):
 
         # Page header
         plt.tight_layout()
-                title = 'Monthly Usage Report'
+        title = 'Monthly Usage Report'
         plt.text(0.5, 0.90, title, horizontalalignment='center', verticalalignment='bottom', transform=fig.transFigure,
                  size=24)
 
