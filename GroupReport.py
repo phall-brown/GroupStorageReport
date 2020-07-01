@@ -5,6 +5,7 @@ import subprocess
 import pandas as pd
 import matplotlib
 import matplotlib.pyplot as plt
+from matplotlib import rcParams
 from matplotlib.backends.backend_pdf import PdfPages
 
 # DEFINE FUNCTIONS
@@ -152,7 +153,7 @@ def get_usage(username,partition,start,end):
     output=[len(times),sum(times)]
     return output
 
-def make_pdf(data):
+def make_pdf(data,outpath):
 #def make_pdf(filePath):
     """
     Create plots and tables and use them to generate formatted report.
@@ -162,105 +163,122 @@ def make_pdf(data):
 #    except OSError:
 #        pass
 
-    with PdfPages('output/' + filePath[:-4] + '_Analysis.pdf') as pdf:
-        df = readFile(filePath)
-        userstorage = df["Storage (GB)"]
-        userlist = df["Username"]
-        legend = buildlegendtable(df)
-        userbatchjobs = df["# Jobs (batch)"]
-        userbatchmins = pd.to_numeric(df["Core*minutes (batch)"], errors='coerce')/60.0
-        userbigmemjobs = df["# Jobs (bigmem)"]
-        userbigmemmins = pd.to_numeric(df["Core*minutes (bigmem)"], errors='coerce')/60.0
-        groupmembers = buildgroupmemberstable(df)
-        grouptotals = buildgrouptotalstable(df)
+    with PdfPages(outpath+'test.pdf') as pdf:
+#    with PdfPages('output/' + filePath[:-4] + '_Analysis.pdf') as pdf:
+      rcParams['font.family']='sans-serif'
+      rcParams['font.sans-serif']=['Arial'] 
+      
+      primary=data[data.Affiliation=='primary']
+      secondary=data[data.Affiliation!='primary']
+      del primary['Affiliation']
+      del primary['Email']
+      del secondary['Affiliation']
+      del secondary['Email']
+
+      # NEED TO COMBINE PRIMARY AND SECONDARY INTO SINGLE, SORTED ARRAY TO CREATE SINGLE FORMATTED TABLE
+
+#        df = readFile(filePath)
+#        userstorage = df["Storage (GB)"]
+#        userlist = df["Username"]
+#        legend = buildlegendtable(df)
+#        userbatchjobs = df["# Jobs (batch)"]
+#        userbatchmins = pd.to_numeric(df["Core*minutes (batch)"], errors='coerce')/60.0
+#        userbigmemjobs = df["# Jobs (bigmem)"]
+#        userbigmemmins = pd.to_numeric(df["Core*minutes (bigmem)"], errors='coerce')/60.0
+#        groupmembers = buildgroupmemberstable(df)
+#        grouptotals = buildgrouptotalstable(df)
 
         #Create Page 1
-        fig = plt.figure(figsize=(8.27, 11.69))  # portrait orientation
+#        fig = plt.figure(figsize=(8.27, 11.69))  # portrait orientation
 
-        grid_size = (100, 100)
-        def make_autopct(values):
-            def my_autopct(pct):
-                if pct==0.0:
-                    return ' '
-                elif pct < 0.1:
-                    return '<0.1'
-                else:
-                    return '{p:.1f}'.format(p=pct)
-            return my_autopct
+#        grid_size = (100, 100)
+#        def make_autopct(values):
+#            def my_autopct(pct):
+#                if pct==0.0:
+#                    return ' '
+#                elif pct < 0.1:
+#                    return '<0.1'
+#                else:
+#                    return '{p:.1f}'.format(p=pct)
+#            return my_autopct
 
         # Storage Share Pie Chart
-        plt.subplot2grid(grid_size, (10, 50), rowspan=25, colspan=50)
-        plt.pie(userstorage, autopct=make_autopct(userstorage), pctdistance=1.25)
-        plt.title('Storage (%)')
+#        plt.subplot2grid(grid_size, (10, 50), rowspan=25, colspan=50)
+#        plt.pie(userstorage, autopct=make_autopct(userstorage), pctdistance=1.25)
+#        plt.title('Storage (%)')
 
         # Stores list of colors for later tables, will need testing on groups with very large quantities of members
-        colorlist = plt.rcParams['axes.prop_cycle'].by_key()['color']
+#        colorlist = plt.rcParams['axes.prop_cycle'].by_key()['color']
 
         # Group Member Legend w/ Color Key
-        plt.subplot2grid(grid_size, (10, 0), rowspan=25, colspan=50)
-        plt.axis('off')
-        plt.table(cellText=legend.values, cellLoc="center", cellColours=list(zip(colorlist)),
-                  colLabels=list(legend.columns), loc="center")
-        plt.title('Group Members')
+#        plt.subplot2grid(grid_size, (10, 0), rowspan=25, colspan=50)
+#        plt.axis('off')
+#        plt.table(cellText=legend.values, cellLoc="center", cellColours=list(zip(colorlist)),
+#                  colLabels=list(legend.columns), loc="center")
+#        plt.title('Group Members')
 
         # Batch Job Share Pie Chart
-        plt.subplot2grid(grid_size, (40, 0), rowspan=25, colspan=50)
-        plt.pie(userbatchjobs, autopct=make_autopct(userbatchjobs), pctdistance=1.25)
-        plt.title('Batch: Share of Jobs (%)')
+#        plt.subplot2grid(grid_size, (40, 0), rowspan=25, colspan=50)
+#        plt.pie(userbatchjobs, autopct=make_autopct(userbatchjobs), pctdistance=1.25)
+#        plt.title('Batch: Share of Jobs (%)')
 
         # Batch Job Utilization Pie Chart
-        plt.subplot2grid(grid_size, (40, 50), rowspan=25, colspan=50)
-        plt.pie(userbatchmins, autopct=make_autopct(userbatchmins), pctdistance=1.25)
-        plt.title('Batch: Utilization (%)')
+#        plt.subplot2grid(grid_size, (40, 50), rowspan=25, colspan=50)
+#        plt.pie(userbatchmins, autopct=make_autopct(userbatchmins), pctdistance=1.25)
+#        plt.title('Batch: Utilization (%)')
 
         # Bigmem Job Share Pie Chart
-        plt.subplot2grid(grid_size, (70, 0), rowspan=25, colspan=50)
-        plt.pie(userbigmemjobs, autopct=make_autopct(userbigmemjobs), pctdistance=1.25)
-        plt.title('Bigmem: Share of Jobs (%)')
+#        plt.subplot2grid(grid_size, (70, 0), rowspan=25, colspan=50)
+#        plt.pie(userbigmemjobs, autopct=make_autopct(userbigmemjobs), pctdistance=1.25)
+#        plt.title('Bigmem: Share of Jobs (%)')
 
         # Bigmem Job Utilization Pie Chart
-        plt.subplot2grid(grid_size, (70, 50), rowspan=25, colspan=50)
-        plt.pie(userbatchmins, autopct=make_autopct(userbigmemmins), pctdistance=1.25)
-        plt.title('Bigmem: Utilization (%)')
+#        plt.subplot2grid(grid_size, (70, 50), rowspan=25, colspan=50)
+#        plt.pie(userbatchmins, autopct=make_autopct(userbigmemmins), pctdistance=1.25)
+#        plt.title('Bigmem: Utilization (%)')
 
         # Page header
-        plt.tight_layout()
-        title = 'Monthly Usage Report'
-        plt.text(0.5, 0.90, title, horizontalalignment='center', verticalalignment='bottom', transform=fig.transFigure,
-                 size=24)
 
-        pdf.savefig()
-        plt.close()
+#        title = 'Monthly Usage Report'
+#        plt.text(0.5, 0.90, title, horizontalalignment='center', verticalalignment='bottom', transform=fig.transFigure,
+#                 size=24)
+
+#        pdf.savefig()
+#        plt.close()
 
 
         # Table
-        fig = plt.figure(figsize=(11.69, 8.27))  # landscape orientation
+      fig = plt.figure(figsize=(11.69, 8.27))  # landscape orientation
 
-        grid_size = (100, 100)
+      grid_size = (100, 100)
 
-        # Group Members Data Table
-        plt.subplot2grid(grid_size, (10, 1), rowspan=45, colspan=99)
-        plt.axis('off')
-        plt.table(cellText=groupmembers.values, cellLoc="center", rowLabels=list(["          "] * len(df.index)),
-                  rowColours=colorlist, colLabels=list(groupmembers.columns), loc="center")
-        plt.title('Group Members')
+      # Primary Group Members Data Table
+      plt.subplot2grid(grid_size, (10, 1), rowspan=45, colspan=99)
+      plt.axis('off')
+      plt.table(cellText=primary.values, cellLoc="center",
+                colLabels=list(primary.columns), loc="center")
+#      plt.table(cellText=secondary.values, cellLoc="center",
+#                colLabels=list(primary.columns), loc="center")
+#      plt.table(cellText=data.values, cellLoc="center",
+#                colLabels=list(data.columns), loc="center")
+      plt.title('Group Members',fontsize=20,fontweight='bold',horizontalalignment='left')
 
-        batch = 'Partition: Batch'
-        plt.text(0.635, 0.74, batch, verticalalignment='bottom', transform=fig.transFigure, size=8)
+#        batch = 'Partition: Batch'
+#        plt.text(0.635, 0.74, batch, verticalalignment='bottom', transform=fig.transFigure, size=8)
 
-        bigmem = 'Partition: Bigmem'
-        plt.text(0.8125, 0.74, bigmem, verticalalignment='bottom', transform=fig.transFigure, size=8)
+#        bigmem = 'Partition: Bigmem'
+#        plt.text(0.8125, 0.74, bigmem, verticalalignment='bottom', transform=fig.transFigure, size=8)
 
         # Group Totals Data Table
-        plt.subplot2grid(grid_size, (70, 0), rowspan=30, colspan=100)
-        plt.axis('off')
-        plt.table(cellText=grouptotals.values, cellLoc="center", colLabels=list(grouptotals.columns), loc="center")
-        plt.title('Group Totals')
+      plt.subplot2grid(grid_size, (70, 0), rowspan=30, colspan=100)
+      plt.axis('off')
+#        plt.table(cellText=grouptotals.values, cellLoc="center", colLabels=list(grouptotals.columns), loc="center")
+      plt.title('Group Totals')
 
-        pdf.savefig()
-        plt.close()
+      pdf.savefig()
+      plt.close()
 
-
+##############
 # MAIN PROGRAM
 # get input options
 parser=argparse.ArgumentParser(description=
@@ -291,6 +309,7 @@ name={}
 
 # constants
 storagepath='/gpfs/data/ccvstaff/quota-reports/'+args.groupname+'-quota-report.txt'
+outpath='/gpfs/data/ccvstaff/phall1/projects/baldrick/reports/reports.venv/GroupReport/'
 
 # get list of group members
 affiliation=get_members(args.groupname)
@@ -319,6 +338,8 @@ gpu_df=pd.DataFrame.from_dict(gpu,orient='index',columns=['GPUJobs','GPUUsage'])
 data=pd.concat([name_df,email_df,affiliation_df,account_df,
                batch_df,bigmem_df,gpu_df,storage],
                axis=1,ignore_index=False) 
+
+
     
 # clean up NaNs and formatting of dataframe
 data['Name']=data['Name'].fillna('NA')
@@ -334,17 +355,9 @@ data['BigmemUsage']=data['BigmemUsage'].astype(int)
 data['GPUJobs']=data['GPUJobs'].astype(int)
 data['GPUUsage']=data['GPUUsage'].astype(int)
 data['GB_used']=data['GB_used'].astype(int)
+
+# generate output
+make_pdf(data,outpath)
     
 # output to screen (for debugging only)
-#print(args.groupname)
-#print(args.start)
-#print(args.end)
-#print(account)
-#print(name)
-#print(emailaddr)
-#print(affiliation)
-#print(batch)
-#print(bigmem)
-#print(gpu)
-#print(storage)
 print(data)
