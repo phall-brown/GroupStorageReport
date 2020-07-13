@@ -6,7 +6,7 @@ Generate a summary resource usage report for a given Oscar user group over a fix
 4. Group members
 
 # Basic Usage
-`python groupreport.py groupname -S yyyy-mm-dd -E yyyy-mm-dd`
+`python GroupReport.py groupname -S yyyy-mm-dd -E yyyy-mm-dd`
 
 `groupname` name of a Linux group on Oscar
 
