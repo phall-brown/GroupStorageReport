@@ -36,7 +36,7 @@ def get_storage(storagepath):
     with each.
     """
     titles=['username','parent','type',
-            'GB_used','GB_avail','GB_hard','GB_grace','junk',
+            'StorageGB','GB_avail','GB_hard','GB_grace','junk',
             'used_FL','soft_FL','hard_FL','grace_FL']
     nheader=4 # number of header lines in quota-report.txt files 
     data=pd.read_csv(storagepath,
@@ -45,7 +45,7 @@ def get_storage(storagepath):
                       skiprows=nheader,
                       names=titles,
                       index_col='username',
-                      usecols=['username','GB_used','GB_avail'])
+                      usecols=['username','StorageGB','GB_avail'])
     total_used=data.iloc[0,0]
     total_avail=data.iloc[0,1]
     data=data.drop(data.index[0]).drop(columns='GB_avail')
@@ -100,8 +100,8 @@ def get_account_types(username):
     prigpup=['pri-gpu+','pri-gpu+1']
     gpuhe=['gpu-he','gpu-he1']
     # Bigmem accounts
-    # NEED TO ADD WHEN ADDED TO OSCAR
-   
+    pribigmem=['pri-bigmem','pri-bigmem1']
+ 
     # Get list of all groups to which user belongs
     proc=subprocess.Popen(['id','-Gn',username],
                            stdout=subprocess.PIPE,
@@ -126,6 +126,9 @@ def get_account_types(username):
     for group in gpuhe:
       if group in groups:
         output.append('gpu-he')
+    for group in pribigmem:
+      if group in groups:
+        output.append('pri-bigmem')
 
     return output
 
@@ -150,15 +153,15 @@ def get_usage(username,partition,start,end):
     times=[int(i) for i in times]
 
     # output[0]: total number of jobs
-    # output[1]: total CPUTime of jobs (in units of cpu•s) 
-    output=[len(times),sum(times)]
+    # output[1]: total CPUTime of jobs (in units of cpu•hr) 
+    output=[len(times),sum(times)/3600]
     return output
 
 def make_pdf(data,allocation,args,outpath):
     """
     Create plots and tables and use them to generate formatted report.
     """
-    with PdfPages(outpath+'test.pdf') as pdf:
+    with PdfPages(outpath+args.groupname+'_test.pdf') as pdf:
       rcParams['font.family']='sans-serif'
 #      rcParams['font.sans-serif']=['Arial'] 
 
@@ -307,7 +310,8 @@ def make_pdf(data,allocation,args,outpath):
       x=np.arange(len(usage))
       w=0.33    # width of bars in plot
       plt.xticks(x,labels,fontsize=10,rotation=45)
-      uplot=ax2.bar(x-w/2,usage/3600,width=w,color='b')
+      uplot=ax2.bar(x-w/2,usage,width=w,color='b')
+#      uplot=ax2.bar(x-w/2,usage/3600,width=w,color='b')
       plt.ylabel('Usage (core•hrs)',weight='bold')
       ax3=ax2.twinx()
       nplot=ax3.bar(x+w/2,jobs,width=w,color='g')
@@ -330,7 +334,8 @@ def make_pdf(data,allocation,args,outpath):
       x=np.arange(len(usage))
       w=0.33    # width of bars in plot
       plt.xticks(x,labels,fontsize=10,rotation=45)
-      uplot=ax4.bar(x-w/2,usage/3600,width=w,color='b')
+      uplot=ax4.bar(x-w/2,usage,width=w,color='b')
+#      uplot=ax4.bar(x-w/2,usage/3600,width=w,color='b')
       plt.ylabel('Usage (core•hrs)',weight='bold')
       ax5=ax4.twinx()
       nplot=ax5.bar(x+w/2,jobs,width=w,color='g')
@@ -353,7 +358,8 @@ def make_pdf(data,allocation,args,outpath):
       x=np.arange(len(usage))
       w=0.33    # width of bars in plot
       plt.xticks(x,labels,fontsize=10,rotation=45)
-      uplot=ax6.bar(x-w/2,usage/3600,width=w,color='b')
+      uplot=ax6.bar(x-w/2,usage,width=w,color='b')
+#      uplot=ax6.bar(x-w/2,usage/3600,width=w,color='b')
       plt.ylabel('Usage (core•hrs)',weight='bold')
       ax7=ax6.twinx()
       nplot=ax7.bar(x+w/2,jobs,width=w,color='g')
@@ -587,16 +593,15 @@ bigmem={}
 emailaddr={}
 gpu={}
 name={}
-#storage={}
 
 # constants
 storagepath='/gpfs/data/ccvstaff/quota-reports/'+args.groupname+'-quota-report.txt'
-outpath='/gpfs/data/ccvstaff/phall1/projects/baldrick/reports/reports.venv/GroupReport/'
+outpath='/gpfs/data/ccvstaff/phall1/projects/baldrick/reports/reports2.venv/output/'
 
 # get list of group members
 affiliation=get_members(args.groupname)
 # get storage for group members
-total_used,total_avail,storage=get_storage(storagepath)
+total_used,allocation,storage=get_storage(storagepath)
 
 # get general info and usage metrics for each individual user
 for user in affiliation:
@@ -619,10 +624,9 @@ gpu_df=pd.DataFrame.from_dict(gpu,orient='index',columns=['GPUJobs','GPUUsage'])
 # combine dataframes into a single dataframe
 data=pd.concat([name_df,email_df,affiliation_df,account_df,
                batch_df,bigmem_df,gpu_df,storage],
-               axis=1,ignore_index=False) 
+               axis=1,ignore_index=False).reset_index(drop=False) 
+data.rename(columns={'index':'Username'},inplace=True)
 
-
-    
 # clean up NaNs and formatting of dataframe
 data['Name']=data['Name'].fillna('NA')
 data['Email']=data['Email'].fillna('NA')
@@ -636,10 +640,9 @@ data['BigmemJobs']=data['BigmemJobs'].astype(int)
 data['BigmemUsage']=data['BigmemUsage'].astype(int)
 data['GPUJobs']=data['GPUJobs'].astype(int)
 data['GPUUsage']=data['GPUUsage'].astype(int)
-data['GB_used']=data['GB_used'].astype(int)
+data['StorageGB']=data['StorageGB'].astype(int)
 
+#print(data)
+#print(data.columns)
 # generate output
-make_pdf(data,outpath)
-    
-# output to screen (for debugging only)
-print(data)
+make_pdf(data,allocation,args,outpath)
