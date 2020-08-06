@@ -130,6 +130,10 @@ def get_account_types(username):
       if group in groups:
         output.append('pri-bigmem')
 
+    # Add indicator to handle users with no premium account(s)
+    if not output:
+      output.append('-')
+
     return output
 
 def get_usage(username,partition,start,end):
