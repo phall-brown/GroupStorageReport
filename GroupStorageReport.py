@@ -169,222 +169,222 @@ def make_pdf(data,allocation,args,outpath):
       rcParams['font.family']='sans-serif'
 #      rcParams['font.sans-serif']=['Arial'] 
 
-      # Create Page 1 - Summary Table and Storage
-      fig = plt.figure(figsize=(7.5, 10))  # portrait orientation
-      grid_size=(20,3)
+#      # Create Page 1 - Summary Table and Storage
+#      fig = plt.figure(figsize=(7.5, 10))  # portrait orientation
+#      grid_size=(20,3)
+#
+#      # Text headings and annotations
+#      # Report Header
+#      ax1=plt.subplot2grid(grid_size,(0,0),rowspan=2,colspan=3)
+#      plt.axis('off')
+#      plt.text(0.5,1.0,
+#               'Oscar Monthly Usage Report',
+#               horizontalalignment='center',
+#               verticalalignment='bottom',
+#               transform=ax1.transAxes,
+#               size=14,
+#               fontweight='bold')
+#      plt.text(0.5,0.75,
+#               'Group: '+args.groupname,
+#               horizontalalignment='center',
+#               verticalalignment='top',
+#               transform=ax1.transAxes,
+#               size=10,
+#               fontweight='bold')
+#      plt.text(0.5,0.5,
+#               args.start+' to '+args.end,
+#               horizontalalignment='center',
+#               verticalalignment='top',
+#               transform=ax1.transAxes,
+#               size=10,
+#               fontweight='bold')
+#
+#      # 1. Summary
+#      # get formatted data
+#      members_summary,storage_summary,accounts_summary=format_summary(data,allocation)
+#      # heading
+#      ax3=plt.subplot2grid(grid_size,(2,0),rowspan=2,colspan=3)
+#      plt.axis('off')
+#      plt.text(-0.1,0.75,
+#               '1. Summary',
+#               horizontalalignment='left',
+#               verticalalignment='center',
+#               size=12,
+#               fontweight='bold')
+#      # content
+#      ax4=plt.subplot2grid(grid_size,(4,0),rowspan=6,colspan=1)
+#      table4=plt.table(cellText=members_summary,cellLoc='left',
+#                loc='upper center')
+#      table4.auto_set_font_size(False)
+#      table4.set_fontsize(9)
+#      table4.auto_set_column_width([0,1])
+#      table4.scale(1,2)
+#      plt.title('Group Members',size=10,fontweight='bold')
+#      plt.axis('off')
+#
+#      ax5=plt.subplot2grid(grid_size,(4,1),rowspan=6,colspan=1)
+#      table5=plt.table(cellText=accounts_summary,cellLoc='left',
+#                loc='upper center')
+#      table5.auto_set_font_size(False)
+#      table5.set_fontsize(9)
+#      table5.auto_set_column_width([0,1])
+#      table5.scale(1,2)
+#      plt.title('Premium Accounts',size=10,fontweight='bold')
+#      plt.axis('off')
+#
+#      ax6=plt.subplot2grid(grid_size,(4,2),rowspan=6,colspan=1)
+#      table6=plt.table(cellText=storage_summary,cellLoc='right',
+#                loc='upper center')
+#      table6.auto_set_font_size(False)
+#      table6.set_fontsize(9)
+#      table6.auto_set_column_width([0,1])
+#      table6.scale(1,2)
+#      plt.title('Storage (GB)',size=10,fontweight='bold')
+#      plt.axis('off')
+#
+#      # 2. Storage - Heading
+#      ax7=plt.subplot2grid(grid_size,(10,0),rowspan=1,colspan=3)
+#      plt.axis('off')
+#      plt.text(-0.1,0,
+#               '2. Storage (total allocation: '+str(allocation)+' GB)',
+#               horizontalalignment='left',
+#               verticalalignment='bottom',
+#               size=12,
+#               fontweight='bold')
+#
+#      # 2. Storage - Bar Chart
+#      ax8=plt.subplot2grid(grid_size,(12,0),rowspan=9,colspan=3)
+#      storage,labels=format_storage(data,allocation)
+#
+#      y_offset=0        # initialize vertical-offset for the stacked bars
+#      n_rows=len(storage)
+#      for row in range(n_rows):
+#        ax8.bar(0.5,storage,
+#                0.2,bottom=y_offset)
+#        y_text=y_offset+(0.5*storage[row])
+#        y_offset=y_offset+storage[row]
+#        ax8.text(0.5,y_text,
+#                 labels[row],
+#                 horizontalalignment='center',
+#                 verticalalignment='center',
+#                 size=9,
+#                 color='white')
+#
+#      ax8.text(0.02,0,
+#               '0 GB',
+#               horizontalalignment='right',
+#               verticalalignment='bottom',
+#               transform=ax8.transAxes,
+#               size=10,
+#               color='black')
+#
+#      ax8.text(0.02,1,
+#               str(allocation)+' GB',
+#               horizontalalignment='right',
+#               verticalalignment='top',
+#               transform=ax8.transAxes,
+#               size=10,
+#               color='black')
+#
+##      title='Total Allocation: '+str(allocation)+' GB'
+##      plt.title(title,size=10,fontweight='bold')
+#      plt.axis('off')
+#
+#      pdf.savefig()
+#      plt.close()
 
-      # Text headings and annotations
-      # Report Header
-      ax1=plt.subplot2grid(grid_size,(0,0),rowspan=2,colspan=3)
-      plt.axis('off')
-      plt.text(0.5,1.0,
-               'Oscar Monthly Usage Report',
-               horizontalalignment='center',
-               verticalalignment='bottom',
-               transform=ax1.transAxes,
-               size=14,
-               fontweight='bold')
-      plt.text(0.5,0.75,
-               'Group: '+args.groupname,
-               horizontalalignment='center',
-               verticalalignment='top',
-               transform=ax1.transAxes,
-               size=10,
-               fontweight='bold')
-      plt.text(0.5,0.5,
-               args.start+' to '+args.end,
-               horizontalalignment='center',
-               verticalalignment='top',
-               transform=ax1.transAxes,
-               size=10,
-               fontweight='bold')
-
-      # 1. Summary
-      # get formatted data
-      members_summary,storage_summary,accounts_summary=format_summary(data,allocation)
-      # heading
-      ax3=plt.subplot2grid(grid_size,(2,0),rowspan=2,colspan=3)
-      plt.axis('off')
-      plt.text(-0.1,0.75,
-               '1. Summary',
-               horizontalalignment='left',
-               verticalalignment='center',
-               size=12,
-               fontweight='bold')
-      # content
-      ax4=plt.subplot2grid(grid_size,(4,0),rowspan=6,colspan=1)
-      table4=plt.table(cellText=members_summary,cellLoc='left',
-                loc='upper center')
-      table4.auto_set_font_size(False)
-      table4.set_fontsize(9)
-      table4.auto_set_column_width([0,1])
-      table4.scale(1,2)
-      plt.title('Group Members',size=10,fontweight='bold')
-      plt.axis('off')
-
-      ax5=plt.subplot2grid(grid_size,(4,1),rowspan=6,colspan=1)
-      table5=plt.table(cellText=accounts_summary,cellLoc='left',
-                loc='upper center')
-      table5.auto_set_font_size(False)
-      table5.set_fontsize(9)
-      table5.auto_set_column_width([0,1])
-      table5.scale(1,2)
-      plt.title('Premium Accounts',size=10,fontweight='bold')
-      plt.axis('off')
-
-      ax6=plt.subplot2grid(grid_size,(4,2),rowspan=6,colspan=1)
-      table6=plt.table(cellText=storage_summary,cellLoc='right',
-                loc='upper center')
-      table6.auto_set_font_size(False)
-      table6.set_fontsize(9)
-      table6.auto_set_column_width([0,1])
-      table6.scale(1,2)
-      plt.title('Storage (GB)',size=10,fontweight='bold')
-      plt.axis('off')
-
-      # 2. Storage - Heading
-      ax7=plt.subplot2grid(grid_size,(10,0),rowspan=1,colspan=3)
-      plt.axis('off')
-      plt.text(-0.1,0,
-               '2. Storage (total allocation: '+str(allocation)+' GB)',
-               horizontalalignment='left',
-               verticalalignment='bottom',
-               size=12,
-               fontweight='bold')
-
-      # 2. Storage - Bar Chart
-      ax8=plt.subplot2grid(grid_size,(12,0),rowspan=9,colspan=3)
-      storage,labels=format_storage(data,allocation)
-
-      y_offset=0        # initialize vertical-offset for the stacked bars
-      n_rows=len(storage)
-      for row in range(n_rows):
-        ax8.bar(0.5,storage,
-                0.2,bottom=y_offset)
-        y_text=y_offset+(0.5*storage[row])
-        y_offset=y_offset+storage[row]
-        ax8.text(0.5,y_text,
-                 labels[row],
-                 horizontalalignment='center',
-                 verticalalignment='center',
-                 size=9,
-                 color='white')
-
-      ax8.text(0.02,0,
-               '0 GB',
-               horizontalalignment='right',
-               verticalalignment='bottom',
-               transform=ax8.transAxes,
-               size=10,
-               color='black')
-
-      ax8.text(0.02,1,
-               str(allocation)+' GB',
-               horizontalalignment='right',
-               verticalalignment='top',
-               transform=ax8.transAxes,
-               size=10,
-               color='black')
-
-#      title='Total Allocation: '+str(allocation)+' GB'
-#      plt.title(title,size=10,fontweight='bold')
-      plt.axis('off')
-
-      pdf.savefig()
-      plt.close()
-
-      # Create page 2 - Usage
-      fig=plt.figure(figsize=(7.5,10))  # portrait orientation
-      grid_size=(20,1)
-
-      # Text headings and annotations
-      # 3. Usage - Heading
-      ax1=plt.subplot2grid(grid_size,(0,0),rowspan=1,colspan=1)
-      plt.axis('off')
-      ax1.text(-0.1,1,
-               '3. Usage',
-               horizontalalignment='left',
-               verticalalignment='bottom',
-               transform=ax1.transAxes,
-               size=12,
-               fontweight='bold')
-      # Batch
-      ax2=plt.subplot2grid(grid_size,(1,0),rowspan=4,colspan=1)
-      usage,jobs,labels=format_usage(data,'BatchUsage','BatchJobs')
-      x=np.arange(len(usage))
-      w=0.33    # width of bars in plot
-      plt.xticks(x,labels,fontsize=10,rotation=45)
-      uplot=ax2.bar(x-w/2,usage,width=w,color='b')
+#      # Create page 2 - Usage
+#      fig=plt.figure(figsize=(7.5,10))  # portrait orientation
+#      grid_size=(20,1)
+#
+#      # Text headings and annotations
+#      # 3. Usage - Heading
+#      ax1=plt.subplot2grid(grid_size,(0,0),rowspan=1,colspan=1)
+#      plt.axis('off')
+#      ax1.text(-0.1,1,
+#               '3. Usage',
+#               horizontalalignment='left',
+#               verticalalignment='bottom',
+#               transform=ax1.transAxes,
+#               size=12,
+#               fontweight='bold')
+#      # Batch
+#      ax2=plt.subplot2grid(grid_size,(1,0),rowspan=4,colspan=1)
+#      usage,jobs,labels=format_usage(data,'BatchUsage','BatchJobs')
+#      x=np.arange(len(usage))
+#      w=0.33    # width of bars in plot
+#      plt.xticks(x,labels,fontsize=10,rotation=45)
+#      uplot=ax2.bar(x-w/2,usage,width=w,color='b')
 #      uplot=ax2.bar(x-w/2,usage/3600,width=w,color='b')
-      plt.ylabel('Usage (core•hrs)',weight='bold')
-      ax3=ax2.twinx()
-      nplot=ax3.bar(x+w/2,jobs,width=w,color='g')
-      plt.ylabel('Jobs (#)',weight='bold')
-      plt.legend([uplot,nplot],['Usage (core•hrs)','Jobs (#)'])
-      plt.title('Batch Partition',size=11,weight='bold')
-      if jobs.gt(0).sum()==0:
-        ax2.set_yticks([])
-        ax3.set_yticks([])
-        ax3.text(0.5,0.5,
-                 'No jobs during this period',
-                 horizontalalignment='center',
-                 verticalalignment='center',
-                 transform=ax3.transAxes,
-                 size=11,
-                 fontweight='bold')
-      # GPU
-      ax4=plt.subplot2grid(grid_size,(8,0),rowspan=4,colspan=1)
-      usage,jobs,labels=format_usage(data,'GPUUsage','GPUJobs')
-      x=np.arange(len(usage))
-      w=0.33    # width of bars in plot
-      plt.xticks(x,labels,fontsize=10,rotation=45)
-      uplot=ax4.bar(x-w/2,usage,width=w,color='b')
-#      uplot=ax4.bar(x-w/2,usage/3600,width=w,color='b')
-      plt.ylabel('Usage (core•hrs)',weight='bold')
-      ax5=ax4.twinx()
-      nplot=ax5.bar(x+w/2,jobs,width=w,color='g')
-      plt.ylabel('Jobs (#)',weight='bold')
-      plt.legend([uplot,nplot],['Usage (core•hrs)','Jobs (#)'])
-      plt.title('GPU Partition',size=11,weight='bold')
-      if jobs.gt(0).sum()==0:
-        ax4.set_yticks([])
-        ax5.set_yticks([])
-        ax5.text(0.5,0.5,
-                 'No jobs during this period',
-                 horizontalalignment='center',
-                 verticalalignment='center',
-                 transform=ax5.transAxes,
-                 size=11,
-                 fontweight='bold')
-      # Bigmem
-      ax6=plt.subplot2grid(grid_size,(15,0),rowspan=4,colspan=1)
-      usage,jobs,labels=format_usage(data,'BigmemUsage','BigmemJobs')
-      x=np.arange(len(usage))
-      w=0.33    # width of bars in plot
-      plt.xticks(x,labels,fontsize=10,rotation=45)
-      uplot=ax6.bar(x-w/2,usage,width=w,color='b')
-#      uplot=ax6.bar(x-w/2,usage/3600,width=w,color='b')
-      plt.ylabel('Usage (core•hrs)',weight='bold')
-      ax7=ax6.twinx()
-      nplot=ax7.bar(x+w/2,jobs,width=w,color='g')
-      plt.ylabel('Jobs (#)',weight='bold')
-      plt.legend([uplot,nplot],['Usage (core•hrs)','Jobs (#)'])
-      plt.title('Large Memory Partition',size=11,weight='bold')
-      if jobs.gt(0).sum()==0:
-        ax6.set_yticks([])
-        ax7.set_yticks([])
-        ax7.text(0.5,0.5,
-                 'No jobs during this period',
-                 horizontalalignment='center',
-                 verticalalignment='center',
-                 transform=ax7.transAxes,
-                 size=11,
-                 fontweight='bold')
-
-      # Save figures
-      pdf.savefig()
-      plt.close()
-
+#      plt.ylabel('Usage (core•hrs)',weight='bold')
+#      ax3=ax2.twinx()
+#      nplot=ax3.bar(x+w/2,jobs,width=w,color='g')
+#      plt.ylabel('Jobs (#)',weight='bold')
+#      plt.legend([uplot,nplot],['Usage (core•hrs)','Jobs (#)'])
+#      plt.title('Batch Partition',size=11,weight='bold')
+#      if jobs.gt(0).sum()==0:
+#        ax2.set_yticks([])
+#        ax3.set_yticks([])
+#        ax3.text(0.5,0.5,
+#                 'No jobs during this period',
+#                 horizontalalignment='center',
+#                 verticalalignment='center',
+#                 transform=ax3.transAxes,
+#                 size=11,
+#                 fontweight='bold')
+#      # GPU
+#      ax4=plt.subplot2grid(grid_size,(8,0),rowspan=4,colspan=1)
+#      usage,jobs,labels=format_usage(data,'GPUUsage','GPUJobs')
+#      x=np.arange(len(usage))
+#      w=0.33    # width of bars in plot
+#      plt.xticks(x,labels,fontsize=10,rotation=45)
+#      uplot=ax4.bar(x-w/2,usage,width=w,color='b')
+##      uplot=ax4.bar(x-w/2,usage/3600,width=w,color='b')
+#      plt.ylabel('Usage (core•hrs)',weight='bold')
+#      ax5=ax4.twinx()
+#      nplot=ax5.bar(x+w/2,jobs,width=w,color='g')
+#      plt.ylabel('Jobs (#)',weight='bold')
+#      plt.legend([uplot,nplot],['Usage (core•hrs)','Jobs (#)'])
+#      plt.title('GPU Partition',size=11,weight='bold')
+#      if jobs.gt(0).sum()==0:
+#        ax4.set_yticks([])
+#        ax5.set_yticks([])
+#        ax5.text(0.5,0.5,
+#                 'No jobs during this period',
+#                 horizontalalignment='center',
+#                 verticalalignment='center',
+#                 transform=ax5.transAxes,
+#                 size=11,
+#                 fontweight='bold')
+#      # Bigmem
+#      ax6=plt.subplot2grid(grid_size,(15,0),rowspan=4,colspan=1)
+#      usage,jobs,labels=format_usage(data,'BigmemUsage','BigmemJobs')
+#      x=np.arange(len(usage))
+#      w=0.33    # width of bars in plot
+#      plt.xticks(x,labels,fontsize=10,rotation=45)
+#      uplot=ax6.bar(x-w/2,usage,width=w,color='b')
+##      uplot=ax6.bar(x-w/2,usage/3600,width=w,color='b')
+#      plt.ylabel('Usage (core•hrs)',weight='bold')
+#      ax7=ax6.twinx()
+#      nplot=ax7.bar(x+w/2,jobs,width=w,color='g')
+#      plt.ylabel('Jobs (#)',weight='bold')
+#      plt.legend([uplot,nplot],['Usage (core•hrs)','Jobs (#)'])
+#      plt.title('Large Memory Partition',size=11,weight='bold')
+#      if jobs.gt(0).sum()==0:
+#        ax6.set_yticks([])
+#        ax7.set_yticks([])
+#        ax7.text(0.5,0.5,
+#                 'No jobs during this period',
+#                 horizontalalignment='center',
+#                 verticalalignment='center',
+#                 transform=ax7.transAxes,
+#                 size=11,
+#                 fontweight='bold')
+#
+#      # Save figures
+#      pdf.savefig()
+#      plt.close()
+#
       # Creat page 3 - Members
       # Table
       dataf=format_members(data)
@@ -532,10 +532,7 @@ def format_members(data):
       secondary=data[data.Affiliation=='secondary']
       other=data[data.Affiliation=='NA']
       # create header line to separate table entries by affiliation
-      heading=pd.DataFrame({'Username':'','Name':'','Account':'',
-                            'BatchJobs':'','BatchUsage':'',
-                            'BigmemJobs':'','BigmemUsage':'',
-                            'GPUJobs':'','GPUUsage':'',
+      heading=pd.DataFrame({'Username':'','Name':'',
                             'StorageGB':''},index=[0])
       # sort alphabetically by username and concatenate to create single dataframe,
       # accounting for possibility of affiliations with no members
@@ -564,9 +561,8 @@ def format_members(data):
         else:
           output=other
       # set column headings for use in final report
-      output.columns=['Username', 'Name', 'Account', 'Batch (n)',
-              'Batch (core•hr)', 'Mem (n)', 'Mem (core•hr)', 'GPU (n)',
-              'GPU (core•hr)','Storage (GB)']
+      output.columns=['Username', 'Name',
+              'Storage (GB)']
 
       return output
 
@@ -578,29 +574,30 @@ parser=argparse.ArgumentParser(description=
 parser.add_argument('groupname',
                     help='Name of group to create report for.',
                     type=str)
-parser.add_argument('-S',
-                    dest='start',
-                    help='Beginning of report period, formatted as YYYY-MM-DD.',
-                    type=str)
-parser.add_argument('-E',
-                    dest='end',
-                    help='End of report period, formatted as YYYY-MM-DD.',
-                    type=str)
+#parser.add_argument('-S',
+#                    dest='start',
+#                    help='Beginning of report period, formatted as YYYY-MM-DD.',
+#                    type=str)
+#parser.add_argument('-E',
+#                    dest='end',
+#                    help='End of report period, formatted as YYYY-MM-DD.',
+#                    type=str)
 
 args=parser.parse_args()                    
 
 # declarations
-account={}
+#account={}
 affiliation=[]
-batch={}
-bigmem={}
+#batch={}
+#bigmem={}
 emailaddr={}
-gpu={}
+#gpu={}
 name={}
 
 # constants
 storagepath='/gpfs/data/ccvstaff/quota-reports/'+args.groupname+'-quota-report.txt'
 outpath='/gpfs/data/ccvstaff/phall1/projects/baldrick/reports/reports2.venv/output/'
+#outpath='.'
 
 # get list of group members
 affiliation=get_members(args.groupname)
@@ -611,42 +608,48 @@ total_used,allocation,storage=get_storage(storagepath)
 for user in affiliation:
     name[user]=get_user_name(user)
     emailaddr[user]=get_user_email(user)
-    account[user]=get_account_types(user) 
-    batch[user]=get_usage(user,'batch',args.start,args.end)
-    bigmem[user]=get_usage(user,'bigmem',args.start,args.end)
-    gpu[user]=get_usage(user,'gpu',args.start,args.end)
+#    account[user]=get_account_types(user) 
+#    batch[user]=get_usage(user,'batch',args.start,args.end)
+#    bigmem[user]=get_usage(user,'bigmem',args.start,args.end)
+#    gpu[user]=get_usage(user,'gpu',args.start,args.end)
 
 # convert dicts to pandas dataframes
-affiliation_df=pd.DataFrame.from_dict(affiliation,orient='index',columns=['Affiliation'])
-account_df=pd.DataFrame.from_dict(account,orient='index',columns=['Account'])
+#affiliation_df=pd.DataFrame.from_dict(affiliation,orient='index',columns=['Affiliation'])
+#account_df=pd.DataFrame.from_dict(account,orient='index',columns=['Account'])
 name_df=pd.DataFrame.from_dict(name,orient='index',columns=['Name'])
 email_df=pd.DataFrame.from_dict(emailaddr,orient='index',columns=['Email'])
-batch_df=pd.DataFrame.from_dict(batch,orient='index',columns=['BatchJobs','BatchUsage'])
-bigmem_df=pd.DataFrame.from_dict(bigmem,orient='index',columns=['BigmemJobs','BigmemUsage'])
-gpu_df=pd.DataFrame.from_dict(gpu,orient='index',columns=['GPUJobs','GPUUsage'])
+#batch_df=pd.DataFrame.from_dict(batch,orient='index',columns=['BatchJobs','BatchUsage'])
+#bigmem_df=pd.DataFrame.from_dict(bigmem,orient='index',columns=['BigmemJobs','BigmemUsage'])
+#gpu_df=pd.DataFrame.from_dict(gpu,orient='index',columns=['GPUJobs','GPUUsage'])
 
 # combine dataframes into a single dataframe
-data=pd.concat([name_df,email_df,affiliation_df,account_df,
-               batch_df,bigmem_df,gpu_df,storage],
+#data=pd.concat([name_df,email_df,affiliation_df,account_df,
+#               batch_df,bigmem_df,gpu_df,storage],
+#               axis=1,ignore_index=False).reset_index(drop=False) 
+data=pd.concat([name_df,email_df,
+               storage],
                axis=1,ignore_index=False).reset_index(drop=False) 
 data.rename(columns={'index':'Username'},inplace=True)
 
 # clean up NaNs and formatting of dataframe
 data['Name']=data['Name'].fillna('NA')
 data['Email']=data['Email'].fillna('NA')
-data['Affiliation']=data['Affiliation'].fillna('NA')
-data['Account']=data['Account'].fillna('-')
+#data['Affiliation']=data['Affiliation'].fillna('NA')
+#data['Account']=data['Account'].fillna('-')
 data=data.fillna(0)
 
-data['BatchJobs']=data['BatchJobs'].astype(int)
-data['BatchUsage']=data['BatchUsage'].astype(int)
-data['BigmemJobs']=data['BigmemJobs'].astype(int)
-data['BigmemUsage']=data['BigmemUsage'].astype(int)
-data['GPUJobs']=data['GPUJobs'].astype(int)
-data['GPUUsage']=data['GPUUsage'].astype(int)
+#data['BatchJobs']=data['BatchJobs'].astype(int)
+#data['BatchUsage']=data['BatchUsage'].astype(int)
+#data['BigmemJobs']=data['BigmemJobs'].astype(int)
+#data['BigmemUsage']=data['BigmemUsage'].astype(int)
+#data['GPUJobs']=data['GPUJobs'].astype(int)
+#data['GPUUsage']=data['GPUUsage'].astype(int)
 data['StorageGB']=data['StorageGB'].astype(int)
 
-#print(data)
+print(data.sort_values(by='StorageGB',ascending=False))
+
+data.sort_values(by='StorageGB',ascending=False).to_csv(r'epscor.csv',index=False, header=True)
 #print(data.columns)
 # generate output
-make_pdf(data,allocation,args,outpath)
+#make_pdf(data,allocation,args,outpath)
+
